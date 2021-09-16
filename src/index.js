@@ -19,10 +19,14 @@ app.post('/produto', async(req, resp) => {
     try {     
         let {nome, categoria, avaliacao, precoDe, precoPor, estoque, imgProduto, descricao} = req.body;
 
-        if(nome == "" || categoria == "" || avaliacao == "" || precoDe == "" || precoPor == "" || estoque == "" || descricao == "" || imgProduto == "") {
-            resp.send({error: 'Temos algum campo nulo !!'});
-        } else if(avaliacao <= 0 || precoDe <= 0 || precoPor <= 0 || estoque <= 0) {
-            resp.send({error: 'Algum campo nao pode ter numero negativo !!'});
+        let pesquisa = await db.tb_produto.findOne({
+            where: {
+                nm_produto: nome
+            }
+        });
+
+        if(pesquisa != null) {
+            resp.send('Produto repetido !!');
         } else {
             let criar = await db.tb_produto.create({
                 nm_produto: nome,
@@ -34,7 +38,14 @@ app.post('/produto', async(req, resp) => {
                 img_produto: imgProduto,
                 ds_produto: descricao
             });
-            resp.send(criar);
+
+            if(nome === "" || categoria === "" || avaliacao === "" || precoDe === "" || precoPor === "" || estoque === "" || imgProduto === "" || descricao === "") {
+                resp.send('Tem algum campo nulo !!');
+            } else if( avaliacao <= 0 || precoDe <= 0 || precoPor <= 0 || estoque <= 0) {
+                resp.send('Algum campo nao pode ter numero negativo') 
+            } else {
+                resp.send(criar);
+            }
         } 
     } catch (e) {
         resp.send({error: e.toString()});
