@@ -17,7 +17,8 @@ app.get('/produto', async(req, resp) => {
 
 app.post('/produto', async(req, resp) => {
     try {     
-        let {nome, categoria, avaliacao, precoDe, precoPor, estoque, descricao, imgProduto} = req.body;
+        let {nome, categoria, avaliacao, precoDe, precoPor, estoque, imgProduto, descricao} = req.body;
+
         if(nome == "" || categoria == "" || avaliacao == "" || precoDe == "" || precoPor == "" || estoque == "" || descricao == "" || imgProduto == "") {
             resp.send({error: 'Temos algum campo nulo !!'});
         } else if(avaliacao <= 0 || precoDe <= 0 || precoPor <= 0 || estoque <= 0) {
@@ -26,12 +27,12 @@ app.post('/produto', async(req, resp) => {
             let criar = await db.tb_produto.create({
                 nm_produto: nome,
                 ds_categoria: categoria,
+                vl_avaliacao: avaliacao,
                 vl_preco_de: precoDe,
                 vl_preco_por: precoPor,
-                vl_avaliacao: avaliacao,
-                ds_produto: descricao,
                 qtd_estoque: estoque,
-                img_produto: imgProduto
+                img_produto: imgProduto,
+                ds_produto: descricao
             });
             resp.send(criar);
         } 
