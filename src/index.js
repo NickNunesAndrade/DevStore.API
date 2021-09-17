@@ -26,7 +26,7 @@ app.post('/produto', async(req, resp) => {
         });
 
         if(pesquisa != null) {
-            resp.send('Produto repetido !!');
+           return resp.send('Produto repetido !!');
         } else {
             let criar = await db.tb_produto.create({
                 nm_produto: nome,
@@ -40,9 +40,11 @@ app.post('/produto', async(req, resp) => {
             });
 
             if(nome === "" || categoria === "" || avaliacao === "" || precoDe === "" || precoPor === "" || estoque === "" || imgProduto === "" || descricao === "") {
-                resp.send('Tem algum campo nulo !!');
+               return resp.send('Tem algum campo nulo !!');
             } else if( avaliacao <= 0 || precoDe <= 0 || precoPor <= 0 || estoque <= 0) {
-                resp.send('Algum campo nao pode ter numero negativo') 
+               return resp.send('Algum campo nao pode ter numero negativo') 
+            } else if((precoDe != Number(precoDe)) || (precoPor != Number(precoPor)) || (estoque != Number(estoque))) {
+               return resp.send('Alguns campos podem somente numeros')
             } else {
                 resp.send(criar);
             }
